@@ -11,12 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentService implements IStudentService {
+    public static final String SELECT_ALL_STUDENT = "SELECT * FROM students";
+    public static final String SELECT_BY_ID = "SELECT * FROM students where idStudent = ?";
     private static Connection connection = SingletonConnection.getConnection();
     @Override
     public List<Student> findAll() {
         List<Student> studentList = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM students");
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_STUDENT);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
                 int id_Student = resultSet.getInt("idStudent");
@@ -40,7 +42,7 @@ public class StudentService implements IStudentService {
     public Student select(int id) {
         Student student = new Student();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM students where idStudent = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_ID);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {

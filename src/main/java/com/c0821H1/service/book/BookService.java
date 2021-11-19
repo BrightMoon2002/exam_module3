@@ -11,12 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookService implements IBookService{
+    public static final String SELECT_BY_NAME = "SELECT * FROM books where nameBook LIKE ?";
+    public static final String UPDATE_BY_ID = "UPDATE books set nameBook = ?, Author = ?, description = ?, quantity = ? WHERE idBook = ?";
+    public static final String FIND_BY_ID = "SELECT * FROM books where idBook = ?";
+    public static final String SELECT_ALL = "SELECT * FROM books";
     private static Connection connection = SingletonConnection.getConnection();
     @Override
     public List<Book> findAll() {
         List<Book> bookList = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM books");
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int idBook = resultSet.getInt("idBook");
@@ -41,7 +45,7 @@ public class BookService implements IBookService{
     public Book select(int id) {
         Book book = new Book();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM books where idBook = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -62,7 +66,7 @@ public class BookService implements IBookService{
     public boolean update(Book book) {
         boolean rowUpdate = false;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE books set nameBook = ?, Author = ?, description = ?, quantity = ? WHERE idBook = ? ");
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BY_ID + " ");
             preparedStatement.setString(1, book.getNameBook());
             preparedStatement.setString(2, book.getAuthor());
             preparedStatement.setString(3, book.getDescription());
@@ -91,7 +95,7 @@ public class BookService implements IBookService{
     public Book selectByName(String name) {
         Book book = new Book();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM books where nameBook LIKE ?");
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BY_NAME);
             name = "%" + name + "%";
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
